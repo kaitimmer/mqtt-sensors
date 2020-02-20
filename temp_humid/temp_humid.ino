@@ -9,6 +9,7 @@ WiFiClientSecure wifiClientSecure;
 PubSubClient client(wifiClientSecure);
 
 const char *mqttTopic = "sensors";
+char sendBuf[128];
 
 void setup()
 {
@@ -32,7 +33,7 @@ void wifiConnect()
   WiFi.begin(ssid, wifiPass);
  
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(1000);
     Serial.println("Connecting to WiFi..");
   }
   Serial.println("Connected to the WiFi network");
@@ -52,15 +53,13 @@ void mqttReconnect()
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 2.5 seconds");
-      delay(2500);
+      delay(1000);
     }
   }
 }
 
 void loop()
 {
-  char sendBuf[128];
-  
   client.loop();
 
   if (!client.connected())
@@ -85,5 +84,9 @@ void loop()
   Serial.print("Published to MQTT Broker: ");
   Serial.println(sendBuf);
 
-  delay(interval);
+  Serial.println("entering deep sleep");
+  // deepsleep takes microseconds as an argument (1/1000000) of a second
+  // The ESP timer is not 100% acurate so expect some differences
+  ESP.deepSleep(interval * 1000000);
+  delay(100);
 }
