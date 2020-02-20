@@ -5,11 +5,10 @@
 #include "config.h"
 
 DHTesp dht;
-
 WiFiClientSecure wifiClientSecure;
-
-
 PubSubClient client(wifiClientSecure);
+
+const char *mqttTopic = "sensors";
 
 void setup()
 {
@@ -79,9 +78,12 @@ void loop()
   Serial.print("Humidity: ");
   Serial.println(measurement.humidity);
 
-  sprintf(sendBuf, "TempAndHumidity,sensor=DHT22 temperature=%.2f,humidity=%.2f", measurement.temperature, measurement.humidity);
+  sprintf(sendBuf, "data,sensor=DHT22,source=%s temperature=%.2f,humidity=%.2f", clientId, measurement.temperature, measurement.humidity);
 
   client.publish(mqttTopic, sendBuf);
   
+  Serial.print("Published to MQTT Broker: ");
+  Serial.println(sendBuf);
+
   delay(interval);
 }
