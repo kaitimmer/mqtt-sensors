@@ -29,13 +29,25 @@ void setup()
 
 void wifiConnect()
 {
+  int tries = 1;
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, wifiPass);
  
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Connecting to WiFi..");
+    Serial.print("Connecting to WiFi (");
+    Serial.print(tries);
+    Serial.println("/60)");
+    tries += 1;
+
+    // tried for 60s. Go back to sleep
+    if (tries >= 60)
+    {
+      deepSleep();
+    }
   }
+
+
   Serial.println("Connected to the WiFi network");
   // Print the IP address
   Serial.println(WiFi.localIP());
@@ -56,6 +68,15 @@ void mqttReconnect()
       delay(1000);
     }
   }
+}
+
+void deepSleep(){
+  Serial.println("entering deep sleep");
+  // deepsleep takes microseconds as an argument (1/1000000) of a second
+  // The ESP timer is not 100% acurate so expect some differences
+
+  ESP.deepSleep(interval * 1000000);
+  delay(100);
 }
 
 void loop()
@@ -84,9 +105,5 @@ void loop()
   Serial.print("Published to MQTT Broker: ");
   Serial.println(sendBuf);
 
-  Serial.println("entering deep sleep");
-  // deepsleep takes microseconds as an argument (1/1000000) of a second
-  // The ESP timer is not 100% acurate so expect some differences
-  ESP.deepSleep(interval * 1000000);
-  delay(100);
+  deepSleep();
 }
