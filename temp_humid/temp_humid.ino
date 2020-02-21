@@ -55,9 +55,20 @@ void wifiConnect()
 
 void mqttReconnect()
 {
+  int tries = 1;
+
   // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.print("Attempting MQTT connection (");
+    Serial.print(tries);
+    Serial.println("/10)");
+    
+    // tried for 10s. Go back to sleep
+    if (tries >= 10)
+    {
+      deepSleep();
+    }
+
     // Attempt to connect
     if (client.connect(clientId, mqttUser, mqttPassword)) {
       Serial.println("connected");
@@ -67,6 +78,8 @@ void mqttReconnect()
       Serial.println(" try again in 2.5 seconds");
       delay(1000);
     }
+    
+    tries += 1;
   }
 }
 
