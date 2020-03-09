@@ -92,6 +92,25 @@ void deepSleep(){
   delay(100);
 }
 
+void sendDHT22() {
+  delay(dht.getMinimumSamplingPeriod());
+
+  TempAndHumidity measurement = dht.getTempAndHumidity();
+
+  Serial.print("Temperature: ");
+  Serial.println(measurement.temperature);
+
+  Serial.print("Humidity: ");
+  Serial.println(measurement.humidity);
+
+  sprintf(sendBuf, "data,sensor=DHT22,source=%s temperature=%.2f,humidity=%.2f", clientId, measurement.temperature, measurement.humidity);
+
+  client.publish(mqttTopic, sendBuf);
+
+  Serial.print("Published to MQTT Broker: ");
+  Serial.println(sendBuf);
+}
+
 void loop()
 {
   client.loop();
@@ -100,23 +119,8 @@ void loop()
   {
     mqttReconnect();
   }
-
-  delay(dht.getMinimumSamplingPeriod());
-  
-  TempAndHumidity measurement = dht.getTempAndHumidity();
- 
-  Serial.print("Temperature: ");
-  Serial.println(measurement.temperature);
- 
-  Serial.print("Humidity: ");
-  Serial.println(measurement.humidity);
-
-  sprintf(sendBuf, "data,sensor=DHT22,source=%s temperature=%.2f,humidity=%.2f", clientId, measurement.temperature, measurement.humidity);
-
-  client.publish(mqttTopic, sendBuf);
-  
-  Serial.print("Published to MQTT Broker: ");
-  Serial.println(sendBuf);
+  // send temperature and humidity from DHT22
+  sendDHT22();
 
   deepSleep();
 }
