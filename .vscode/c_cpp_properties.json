@@ -8,7 +8,8 @@
                 "${workspaceFolder}/**",
                 "~/Documents/Arduino/libraries/**",
                 "/Applications/Arduino.app/Contents/Resources/Java/libraries/**",
-                "/Users/kait/Library/Arduino15/packages/esp8266/hardware/esp8266/2.6.3/**"
+                "/Users/kait/Library/Arduino15/packages/esp8266/hardware/esp8266/2.6.3/**",
+                "/Users/kait/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.2/**"
             ],
             "defines": [],
             "macFrameworkPath": [
