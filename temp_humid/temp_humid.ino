@@ -84,12 +84,17 @@ void mqttReconnect()
 }
 
 void deepSleep(){
-  Serial.println("entering deep sleep");
-  // deepsleep takes microseconds as an argument (1/1000000) of a second
-  // The ESP timer is not 100% acurate so expect some differences
+  if (deepSleepToggle == 1) {
+    Serial.println("entering deep sleep");
+    // deepsleep takes microseconds as an argument (1/1000000) of a second
+    // The ESP timer is not 100% acurate so expect some differences
 
-  ESP.deepSleep(interval * 1000000);
-  delay(100);
+    ESP.deepSleep(interval * 1000000);
+    delay(100);
+  } else {
+    Serial.println("deep sleep deactivted,... just waiting");
+    delay(interval);
+  }
 }
 
 void sendDHT22() {
