@@ -93,7 +93,7 @@ void deepSleep(){
     delay(100);
   } else {
     Serial.println("deep sleep deactivted,... just waiting");
-    delay(interval);
+    delay(interval * 1000);
   }
 }
 
